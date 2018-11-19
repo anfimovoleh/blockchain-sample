@@ -1,6 +1,7 @@
 package core
 
 import (
+	"sync/atomic"
 	"time"
 
 	"github.com/anfimovoleh/blockchain-sample/conf"
@@ -20,63 +21,59 @@ type Ledger struct {
 	log *logrus.Entry
 }
 
-func New(cfg conf.Config) *Ledger {
+func New(log *logrus.Entry, block *conf.Block) *Ledger {
 	return &Ledger{
 		height:       0,
 		blocks:       []Block{},
-		Block:        *cfg.Block(),
+		Block:        *block,
 		currentBlock: Block{},
-		log:          cfg.Log(),
+		log:          log,
 	}
 }
 
-func (l *Ledger) CloseBlock() error {
-	ticker := time.NewTicker(l.Timeout)
+func (l *Ledger) Init(){
+	genesisBlock := Block{
+		Index:     0,
+		Timestamp: time.Now(),
+	}
+
+	genesisBlock.Hash = CalculateHash(genesisBlock)
+
+	l.blocks = append(l.blocks, genesisBlock)
+}
+
+func (l *Ledger) CloseBlock() {
+	ticker := time.NewTicker(time.Duration(l.Timeout))
 
 	for ; ; <-ticker.C {
-		//TODO FINISH ME
-		break
+		//Don't write block with empty records
+		if len(l.currentBlock.Records) == 0 {
+			continue
+		}
+
+		l.currentBlock.Index = l.LastBlock().Index + 1
+		l.currentBlock.Timestamp = time.Now()
+		l.currentBlock.PrevHash = l.LastBlock().Hash
+		l.currentBlock.Hash = CalculateHash(l.currentBlock)
+
+		//increment in thread safe manner
+		atomic.AddUint64(&l.height, 1)
+
+		//append current block to blockchain
+		l.blocks = append(l.blocks, l.currentBlock)
+		//resetting the current block
+		l.currentBlock = Block{}
 	}
 }
 
-func (l *Ledger) Validate() error {
-	//Don't write block with empty records
-	if len(l.currentBlock.Records) == 0 {
-		return ErrEmptyBlock
-	}
-
-	lastBlock := l.LastBlock()
-
-	if lastBlock.Index+1 != l.currentBlock.Index {
-		return ErrNotValidIndex
-	}
-
-	if lastBlock.Hash != l.currentBlock.PrevHash {
-		return ErrNotValidPrevHash
-	}
-
-	if CalculateHash(lastBlock) != l.currentBlock.Hash {
-		return ErrNotValidHash
-	}
+func (l Ledger) Blocks() []Block {
+	return l.blocks
 }
-
-//func (l *Ledger) GenerateBlock() Block {
-//
-//	//take last block
-//	oldBlock := l.blocks[l.height]
-//
-//	newBlock := Block{
-//		Index:     oldBlock.Index + 1,
-//		Timestamp: time.Now(),
-//		Records:   record,
-//		PrevHash:  oldBlock.Hash,
-//	}
-//
-//	newBlock.Hash = CalculateHash(newBlock)
-//
-//	return newBlock
-//}
 
 func (l Ledger) LastBlock() Block {
 	return l.blocks[l.height]
+}
+
+func (l *Ledger) CurrentBlock() *Block{
+	return &l.currentBlock
 }

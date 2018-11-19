@@ -7,7 +7,6 @@ import (
 	"github.com/anfimovoleh/blockchain-sample/conf"
 	"github.com/anfimovoleh/blockchain-sample/core"
 	"github.com/anfimovoleh/blockchain-sample/internal/server"
-	"github.com/pkg/errors"
 )
 
 type App struct {
@@ -15,23 +14,30 @@ type App struct {
 	ledger *core.Ledger
 }
 
-func New(config conf.Config) *App {
+func New(cfg conf.Config) *App {
+	ledger := core.New(cfg.Log(), cfg.Block())
+	ledger.Init()
+
 	return &App{
-		cfg:    config,
-		ledger: core.New(),
+		cfg:    cfg,
+		ledger: ledger,
 	}
 }
 
-func (a *App) Start() {
+func (a *App) Start() error{
+	go a.ledger.CloseBlock()
+
 	server := http.Server{
 		Addr:           a.cfg.HTTP().Addr(),
-		Handler:        server.Router(),
+		Handler:        server.Router(a.cfg, a.ledger),
 		ReadTimeout:    10 * time.Second,
 		WriteTimeout:   10 * time.Second,
 		MaxHeaderBytes: 1 << 20,
 	}
 
 	if err := server.ListenAndServe(); err != nil {
-		panic(errors.Wrap(err, "failed to start app"))
+		return err
 	}
+
+	return nil
 }

@@ -1,20 +1,17 @@
 package main
 
 import (
-	"time"
-
 	"github.com/anfimovoleh/blockchain-sample"
-	"github.com/anfimovoleh/blockchain-sample/core"
+	"github.com/anfimovoleh/blockchain-sample/conf"
+	"github.com/pkg/errors"
 )
 
 func main() {
+	cfg := conf.New()
 
-	genesisBlock := core.Block{
-		Index:     0,
-		Timestamp: time.Now(),
+	app := app.New(cfg)
+
+	if err := app.Start(); err != nil{
+		panic(errors.Wrap(err, "failed to start app"))
 	}
-
-	core.Blockchain = append(core.Blockchain, genesisBlock)
-
-	app.New().Start()
 }

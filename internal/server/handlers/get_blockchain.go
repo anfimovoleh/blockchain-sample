@@ -4,12 +4,11 @@ import (
 	"encoding/json"
 	"io"
 	"net/http"
-
-	"github.com/anfimovoleh/blockchain-sample/core"
 )
 
 func GetBlockchain(w http.ResponseWriter, r *http.Request) {
-	bytes, err := json.MarshalIndent(core.Blockchain, "", "  ")
+	blocks := Ledger(r).Blocks()
+	bytes, err := json.MarshalIndent(blocks, "", "  ")
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

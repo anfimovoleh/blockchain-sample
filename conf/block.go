@@ -1,13 +1,11 @@
 package conf
 
 import (
-	"time"
-
 	"github.com/caarlos0/env"
 )
 
 type Block struct {
-	Timeout     time.Duration `env:"API_BLOCK_TIMEOUT" envDefault:"15"`
+	Timeout     uint64 `env:"API_BLOCK_TIMEOUT" envDefault:"15"`
 	MaxMsgCount uint64        `env:"API_BLOCK_MAX_MSG_COUNT" envDefault:"250"`
 }
 

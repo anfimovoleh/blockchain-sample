@@ -1,17 +1,31 @@
 package server
 
 import (
+	"github.com/anfimovoleh/blockchain-sample/conf"
+	"github.com/anfimovoleh/blockchain-sample/core"
+	"github.com/anfimovoleh/blockchain-sample/internal/server/middlewares"
+	"github.com/go-chi/chi/middleware"
 	"net/http"
+	"time"
 
 	"github.com/anfimovoleh/blockchain-sample/internal/server/handlers"
 	"github.com/gorilla/mux"
 )
 
-func Router() http.Handler {
-	router := mux.NewRouter()
+func Router(cfg conf.Config, ledger *core.Ledger) http.Handler {
+	r := mux.NewRouter()
 
-	router.HandleFunc("/", handlers.GetBlockchain).Methods("GET")
-	router.HandleFunc("/", handlers.WriteBlock).Methods("POST")
+	r.Use(
+		middlewares.Logger(cfg.Log(), 15 * time.Second),
+		middleware.Recoverer,
+		middlewares.Ctx(
+			handlers.CtxLog(cfg.Log()),
+			handlers.CtxLedger(ledger),
+		),
+	)
 
-	return router
+	r.HandleFunc("/", handlers.GetBlockchain).Methods("GET")
+	r.HandleFunc("/", handlers.AddRecords).Methods("POST")
+
+	return r
 }

@@ -4,13 +4,11 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/anfimovoleh/blockchain-sample/core"
 	"github.com/anfimovoleh/blockchain-sample/resources"
-	"github.com/davecgh/go-spew/spew"
 )
 
-func WriteBlock(w http.ResponseWriter, r *http.Request) {
-	record := &resources.Record{}
+func AddRecords(w http.ResponseWriter, r *http.Request) {
+	record := resources.Record{}
 
 	decoder := json.NewDecoder(r.Body)
 	if err := decoder.Decode(&record); err != nil {
@@ -19,13 +17,10 @@ func WriteBlock(w http.ResponseWriter, r *http.Request) {
 	}
 	defer r.Body.Close()
 
-	if core.IsBlockValid(newBlock, core.Blockchain[len(core.Blockchain)-1]) {
-		newBlockchain := append(core.Blockchain, newBlock)
-		core.ReplaceChain(newBlockchain)
-		spew.Dump(core.Blockchain)
-	}
+	currentBlock := Ledger(r).CurrentBlock()
+	currentBlock.AddRecords(record)
 
-	respondWithJSON(w, r, http.StatusCreated, newBlock)
+	respondWithJSON(w, r, http.StatusCreated, currentBlock)
 }
 
 func respondWithJSON(w http.ResponseWriter, r *http.Request, code int, payload interface{}) {
