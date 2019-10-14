@@ -1,0 +1,27 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: circleci/golang:1.9
+    working_directory: /go/src/github.com/anfimovoleh/blockchain-sample/
+    steps:
+      - checkout
+      - run: ls -la
+      - run: go build -o chain-api -v ./cmd/main.go
+  test:
+    docker:
+      - image: circleci/golang:1.9
+    working_directory: /go/src/github.com/anfimovoleh/blockchain-sample/
+    steps:
+      - checkout
+      - run: ls -la
+      - run: go test -v ./...
+
+workflows:
+  version: 2
+  build_and_test:
+    jobs:
+      - build
+      - test:
+          requires:
+            - build
