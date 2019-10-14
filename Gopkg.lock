@@ -8,10 +8,10 @@
   version = "v3.5.0"
 
 [[projects]]
-  name = "github.com/davecgh/go-spew"
-  packages = ["spew"]
-  revision = "8991bc29aa16c548c550c7ff78260e27b9ab7c73"
-  version = "v1.1.1"
+  name = "github.com/go-chi/chi"
+  packages = [".","middleware"]
+  revision = "da24bba8dcd4021cafac38724bf10dccc97c3e36"
+  version = "v4.0.2"
 
 [[projects]]
   name = "github.com/gorilla/context"
@@ -58,6 +58,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "788f527006e7826bb3295c822bacb3e9bd4d299d3ffe2d0ddcbcd245070b5eed"
+  inputs-digest = "eb1837c8771a1731b8e2207e8938cf3f641a197479eb01b4e3a2d2fe0dedf318"
   solver-name = "gps-cdcl"
   solver-version = 1
