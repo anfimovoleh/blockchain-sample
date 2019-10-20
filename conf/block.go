@@ -6,7 +6,7 @@ import (
 
 type Block struct {
 	Timeout     uint64 `env:"API_BLOCK_TIMEOUT" envDefault:"15"`
-	MaxMsgCount uint64        `env:"API_BLOCK_MAX_MSG_COUNT" envDefault:"250"`
+	MaxMsgCount uint64 `env:"API_BLOCK_MAX_MSG_COUNT" envDefault:"250"`
 }
 
 func (c *ConfigImpl) Block() *Block {

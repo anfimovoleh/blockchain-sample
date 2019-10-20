@@ -31,7 +31,7 @@ func New(log *logrus.Entry, block *conf.Block) *Ledger {
 	}
 }
 
-func (l *Ledger) Init(){
+func (l *Ledger) Init() {
 	genesisBlock := Block{
 		Index:     0,
 		Timestamp: time.Now(),
@@ -74,6 +74,6 @@ func (l Ledger) LastBlock() Block {
 	return l.blocks[l.height]
 }
 
-func (l *Ledger) CurrentBlock() *Block{
+func (l *Ledger) CurrentBlock() *Block {
 	return &l.currentBlock
 }

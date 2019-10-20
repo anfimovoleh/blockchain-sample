@@ -10,7 +10,7 @@ import (
 type CtxKey int
 
 const (
-	logCtxKey  = iota
+	logCtxKey = iota
 	ledgerCtxKey
 )
 

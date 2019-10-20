@@ -24,7 +24,7 @@ func New(cfg conf.Config) *App {
 	}
 }
 
-func (a *App) Start() error{
+func (a *App) Start() error {
 	go a.ledger.CloseBlock()
 
 	server := http.Server{

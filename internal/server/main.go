@@ -16,7 +16,7 @@ func Router(cfg conf.Config, ledger *core.Ledger) http.Handler {
 	r := mux.NewRouter()
 
 	r.Use(
-		middlewares.Logger(cfg.Log(), 15 * time.Second),
+		middlewares.Logger(cfg.Log(), 15*time.Second),
 		middleware.Recoverer,
 		middlewares.Ctx(
 			handlers.CtxLog(cfg.Log()),

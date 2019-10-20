@@ -120,8 +120,8 @@ func TestParsesEnv(t *testing.T) {
 	assert.Equal(t, []time.Duration{d1, d2, d3}, cfg.Durations)
 	assert.Equal(t, time.Second, cfg.Unmarshaler.Duration)
 	assert.Equal(t, time.Minute, cfg.UnmarshalerPtr.Duration)
-	assert.Equal(t, []unmarshaler{unmarshaler{time.Minute * 2}, unmarshaler{time.Minute * 3}}, cfg.Unmarshalers)
-	assert.Equal(t, []*unmarshaler{&unmarshaler{time.Minute * 2}, &unmarshaler{time.Minute * 3}}, cfg.UnmarshalerPtrs)
+	assert.Equal(t, []unmarshaler{{time.Minute * 2}, {time.Minute * 3}}, cfg.Unmarshalers)
+	assert.Equal(t, []*unmarshaler{{time.Minute * 2}, {time.Minute * 3}}, cfg.UnmarshalerPtrs)
 }
 
 func TestParsesEnvInner(t *testing.T) {
