@@ -6,7 +6,7 @@ import (
 )
 
 type Log struct {
-	Lvl string `env:"API_LOG_LEVEL" envDefault:"info"`
+	Lvl string `env:"NODE_LOG_LEVEL" envDefault:"info"`
 }
 
 func (l *Log) GetLogEntry() *logrus.Entry {

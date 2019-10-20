@@ -7,8 +7,8 @@ import (
 )
 
 type HTTP struct {
-	Host string `env:"API_HTTP_HOST" envDefault:"localhost"`
-	Port int    `env:"API_HTTP_PORT" envDefault:"8080"`
+	Host string `env:"NODE_HTTP_HOST" envDefault:"localhost"`
+	Port int    `env:"NODE_HTTP_PORT" envDefault:"8080"`
 }
 
 func (h *HTTP) Addr() string {
